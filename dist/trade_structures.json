@@ -1,0 +1,402 @@
+{
+  "trade_structures": [
+    {
+      "trade_name": "484_BSH",
+      "number_of_trade_components": 2,
+      "trade_components": [
+        {
+          "component_id": 0,
+          "component_name": "484",
+          "number_of_legs": 3,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "PUT",
+              "quantity": 4,
+              "dte": 160,
+              "delta": 25
+            },
+            {
+              "leg_id": 1,
+              "option_type": "PUT",
+              "quantity": -8,
+              "dte": 160,
+              "delta": 15
+            },
+            {
+              "leg_id": 2,
+              "option_type": "PUT",
+              "quantity": 4,
+              "dte": 160,
+              "delta": 5
+            }
+          ]
+        },
+        {
+          "component_id": 1,
+          "component_name": "BSH",
+          "number_of_legs": 2,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "PUT",
+              "quantity": -3,
+              "dte": 90,
+              "delta": 2.5
+            },
+            {
+              "leg_id": 1,
+              "option_type": "PUT",
+              "quantity": 5,
+              "dte": 90,
+              "delta": 1.9
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "trade_name": "488",
+      "number_of_trade_components": 1,
+      "trade_components": [
+        {
+          "component_id": 0,
+          "component_name": "488",
+          "number_of_legs": 3,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "PUT",
+              "quantity": 4,
+              "dte": 200,
+              "delta": 25
+            },
+            {
+              "leg_id": 1,
+              "option_type": "PUT",
+              "quantity": -8,
+              "dte": 200,
+              "delta": 15
+            },
+            {
+              "leg_id": 2,
+              "option_type": "PUT",
+              "quantity": 8,
+              "dte": 200,
+              "delta": 2.5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "trade_name": "BWB_Cal",
+      "number_of_trade_components": 2,
+      "trade_components": [
+        {
+          "component_id": 0,
+          "component_name": "BWB",
+          "number_of_legs": 3,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "PUT",
+              "quantity": 4,
+              "dte": 130,
+              "delta": 25
+            },
+            {
+              "leg_id": 1,
+              "option_type": "PUT",
+              "quantity": -8,
+              "dte": 130,
+              "delta": 15
+            },
+            {
+              "leg_id": 2,
+              "option_type": "PUT",
+              "quantity": 4,
+              "dte": 130,
+              "delta": 7
+            }
+          ]
+        },
+        {
+          "component_id": 1,
+          "component_name": "Cals",
+          "number_of_legs": 2,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "CALL",
+              "quantity": -4,
+              "dte": 130,
+              "delta": 28
+            },
+            {
+              "leg_id": 1,
+              "option_type": "CALL",
+              "quantity": 4,
+              "dte": 160,
+              "delta": 30
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "trade_name": "CRD",
+      "number_of_trade_components": 1,
+      "trade_components": [
+        {
+          "component_id": 0,
+          "component_name": "CRD",
+          "number_of_legs": 2,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "CALL",
+              "quantity": -3,
+              "dte": 15,
+              "delta": 43
+            },
+            {
+              "leg_id": 1,
+              "option_type": "CALL",
+              "quantity": 4,
+              "dte": 22,
+              "delta": 33
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "trade_name": "Surfs_Up_242",
+      "number_of_trade_components": 3,
+      "trade_components": [
+        {
+          "component_id": 0,
+          "component_name": "Calls",
+          "number_of_legs": 3,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "CALL",
+              "quantity": -2,
+              "dte": 160,
+              "delta": 38
+            },
+            {
+              "leg_id": 1,
+              "option_type": "CALL",
+              "quantity": -4,
+              "dte": 160,
+              "delta": 14.5
+            },
+            {
+              "leg_id": 2,
+              "option_type": "CALL",
+              "quantity": 6,
+              "dte": 190,
+              "delta": 22
+            }
+          ]
+        },
+        {
+          "component_id": 1,
+          "component_name": "BWB",
+          "number_of_legs": 3,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "PUT",
+              "quantity": 2,
+              "dte": 160,
+              "delta": 25
+            },
+            {
+              "leg_id": 1,
+              "option_type": "PUT",
+              "quantity": -4,
+              "dte": 160,
+              "delta": 15
+            },
+            {
+              "leg_id": 2,
+              "option_type": "PUT",
+              "quantity": 2,
+              "dte": 160,
+              "delta": 5
+            }
+          ]
+        },
+        {
+          "component_id": 2,
+          "component_name": "LP",
+          "number_of_legs": 1,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "PUT",
+              "quantity": 1,
+              "dte": 160,
+              "delta": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "trade_name": "Allantis",
+      "number_of_trade_components": 3,
+      "trade_components": [
+        {
+          "component_id": 0,
+          "component_name": "Call_Cals",
+          "number_of_legs": 2,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "CALL",
+              "quantity": -4,
+              "dte": 130,
+              "delta": 30
+            },
+            {
+              "leg_id": 1,
+              "option_type": "CALL",
+              "quantity": 3,
+              "dte": 160,
+              "delta": 30
+            }
+          ]
+        },
+        {
+          "component_id": 1,
+          "component_name": "Fly",
+          "number_of_legs": 3,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "PUT",
+              "quantity": 4,
+              "dte": 130,
+              "delta": 22
+            },
+            {
+              "leg_id": 1,
+              "option_type": "PUT",
+              "quantity": -8,
+              "dte": 130,
+              "delta": 30
+            },
+            {
+              "leg_id": 2,
+              "option_type": "PUT",
+              "quantity": 4,
+              "dte": 130,
+              "delta": 40
+            }
+          ]
+        },
+        {
+          "component_id": 2,
+          "component_name": "Balancer_Call",
+          "number_of_legs": 1,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "CALL",
+              "quantity": 1,
+              "dte": 160,
+              "delta": 37
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "trade_name": "Pingu",
+      "number_of_trade_components": 1,
+      "trade_components": [
+        {
+          "component_id": 0,
+          "component_name": "Pingu",
+          "number_of_legs": 3,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "PUT",
+              "quantity": 2,
+              "dte": 30,
+              "delta": 10
+            },
+            {
+              "leg_id": 1,
+              "option_type": "PUT",
+              "quantity": 2,
+              "dte": 42.85,
+              "delta": 30
+            },
+            {
+              "leg_id": 2,
+              "option_type": "PUT",
+              "quantity": -4,
+              "dte": 42.85,
+              "delta": 20
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "trade_name": "139",
+      "number_of_trade_components": 2,
+      "trade_components": [
+        {
+          "component_id": 0,
+          "component_name": "Puts",
+          "number_of_legs": 3,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "PUT",
+              "quantity": 3,
+              "dte": 150,
+              "delta": 37
+            },
+            {
+              "leg_id": 1,
+              "option_type": "PUT",
+              "quantity": -9,
+              "dte": 150,
+              "delta": 16
+            },
+            {
+              "leg_id": 2,
+              "option_type": "PUT",
+              "quantity": 9,
+              "dte": 150,
+              "delta": 5
+            }
+          ]
+        },
+        {
+          "component_id": 1,
+          "component_name": "Call",
+          "number_of_legs": 1,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "CALL",
+              "quantity": 1,
+              "dte": 150,
+              "delta": 9
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "trade_structures": [
+    {
+      "trade_name": "long_put",
+      "number_of_trade_components": 1,
+      "trade_components": [
+        {
+          "component_id": 0,
+          "component_name": "long_put",
+          "number_of_legs": 1,
+          "legs": [
+            {
+              "leg_id": 0,
+              "option_type": "PUT",
+              "quantity": 1,
+              "dte": 30,
+              "delta": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
