@@ -84,7 +84,7 @@ def filter_data(input_option_type: str, input_dte: int, input_delta: float, inpu
 
                 absolute_delta = fabs(float(delta_val) * 100)
                 day_diff = (expiry_date - current_date).days
-                if input_option_type != option_type:
+                if input_option_type != option_type or delta_val == -999.0:
                     continue
 
                 option_chain_row = {"ticker": ticker,
@@ -109,7 +109,7 @@ user_done = False
 additional_run = False
 
 while not user_done:
-    input_trade_name = input('Enter trade name (or type m for menu): ')
+    input_trade_name = input('Enter trade name (type m for menu, q to quit): ')
 
     f = open('trade_structures.json')
     trade_structure_defs = json.load(f)
@@ -121,6 +121,9 @@ while not user_done:
         print("\n")
         f.close()
         continue
+    elif input_trade_name == 'q' or input_trade_name == 'Q':
+        f.close()
+        quit()
 
     json_data = tos_get_option_chain(ticker, contractType='ALL', rangeType='ALL', apiKey=API_KEY)
     # Sometimes the option chain data retrieval fails for some reason (TDA server error?)
@@ -129,115 +132,129 @@ while not user_done:
         while len(json_data[f'{option_chain_type}ExpDateMap'].values()) == 0:
             json_data = tos_get_option_chain(ticker, contractType='ALL', rangeType='ALL', apiKey=API_KEY)
 
-    file_mode = 'w'
-    if additional_run:
-        file_mode = 'a'
-    f = open(str(GENERATED_ORDER_FILE_PATH) + 'TOS_order_gen.txt', file_mode)
-
-    print("\n")
-    trade_found = False
-    for i in trade_structure_defs['trade_structures']:
-        if i['trade_name'] == input_trade_name or i['trade_name'].lower() == input_trade_name:
-            trade_found = True
-            print("The following order was written to the file:")
-            for j in i['trade_components']:
-                option_data_list = []
-                number_of_trades = 0
-                tranche_string = ""
-                option_type: str
-                dte = 0
-                delta: float
-                buy_or_sell_string = ""
-                exp_date_string = ""
-                strike_string = ""
-                put_or_call_string = ""
-                exp_type_suffix = ""
-                exp_type_prefix = ""
-                counter = 0
-                min_quantity = sys.maxsize
-
-                for k in j['legs']:
-
-                    option_type = k['option_type']
-                    dte = k['dte']
-                    delta = k['delta']
-
-                    option_data_list.append(filter_data(option_type, dte, delta, k['quantity'], json_data))
-
-                    if abs(k['quantity']) < min_quantity:
-                        min_quantity = abs(k['quantity'])
-                    counter += 1
-
-                if not is_prime(min_quantity):
-                    number_of_trades = min_quantity
+    good_data = False
+    for option_chain_type in ['call', 'put']:
+        for exp_date in json_data[f'{option_chain_type}ExpDateMap'].values():
+            for strike in exp_date.values():
+                delta_val = strike[0]['delta']
+                if delta_val == -999:
+                    continue
                 else:
-                    number_of_trades = 1
+                    good_data = True
 
-                for k in j['legs']:
-                    tranche_string += str(int(k['quantity'] / number_of_trades))
-                    if k['leg_id'] < j['number_of_legs'] - 1:
-                        tranche_string += '/'
-
-                sum_credit_debit = 0.0
-                counter = 0
-                for x in option_data_list:
-                    # There's a bug in filter_data where sometimes multiple strikes are chosen in leg.
-                    # This is a Band-aid to remove all but the first in the list.
-                    while len(x) > 1:
-                        x.pop(1)
-                    for y in x:
-                        sum_credit_debit += (y['quantity'] * y['mark'])
-
-                        if "AM" in y['description'] and "SPX " in y['description']:
-                            exp_type_prefix = ""
-                            exp_type_suffix = " [AM]"
-                        elif "PM" in y['description'] and 'Quarterly' in y['description']:
-                            exp_type_prefix = "(Quarterlys)"
-                            exp_type_suffix = ""
-                        elif "PM" in y['description'] and 'Quarterly' not in y['description'] and "SPXW " in y[
-                            'description']:
-                            exp_type_prefix = "(Weeklys)"
-                            exp_type_suffix = ""
-                        else:
-                            exp_type_prefix = "unhandled"
-                            exp_type_suffix = "unhandled"
-
-                        exp_date_string += y['expiry_date'].strftime('%d ') + \
-                                           y['expiry_date'].strftime('%b ').upper() + \
-                                           y['expiry_date'].strftime('%y') + exp_type_suffix
-                        strike_string += str(int(y['strike_price']))
-                        put_or_call_string += str(y['options_type'])
-                        if counter < j['number_of_legs'] - 1:
-                            exp_date_string += '/'
-                            strike_string += '/'
-                            put_or_call_string += '/'
-                    counter += 1
-                if sum_credit_debit < 0.0:
-                    buy_or_sell_string = "SELL"
-                else:
-                    buy_or_sell_string = "BUY"
-
-                print(buy_or_sell_string + " +" + str(number_of_trades) + " " + tranche_string +
-                      " CUSTOM SPX 100 " + exp_type_prefix + " " + exp_date_string + " " + strike_string + " " + put_or_call_string +
-                      " @ LMT")
-                f.write(buy_or_sell_string + " +" + str(number_of_trades) + " " + tranche_string +
-                        " CUSTOM SPX 100 " + exp_type_prefix + " " + exp_date_string + " " + strike_string + " " + put_or_call_string +
-                        " @ LMT\n")
-
-    f.close()
-
-    if not trade_found:
-        print("Trade not found in trade_structures file. Please try again.\n")
+    if not good_data:
+        print("\nWarning - Bad option data from TDA's API detected. Please try again later.\n")
         additional_run = True
     else:
-        input_valid = False
-        while not input_valid:
-            user_continues = input('\nAdd another trade [y/n]? ')
-            if user_continues == 'n' or user_continues == 'N':
-                user_done = True
-                input_valid = True
-            elif user_continues == 'y' or user_continues == 'Y':
-                additional_run = True
-                input_valid = True
-            else:
-                print("Unhandled input entered. Please try again.")
+        file_mode = 'w'
+        if additional_run:
+            file_mode = 'a'
+        f = open(str(GENERATED_ORDER_FILE_PATH) + 'TOS_order_gen.txt', file_mode)
+
+        print("\n")
+        trade_found = False
+        for i in trade_structure_defs['trade_structures']:
+            if i['trade_name'] == input_trade_name or i['trade_name'].lower() == input_trade_name:
+                trade_found = True
+                print("The following order was written to the file:")
+                for j in i['trade_components']:
+                    option_data_list = []
+                    number_of_trades = 0
+                    tranche_string = ""
+                    option_type: str
+                    dte = 0
+                    delta: float
+                    buy_or_sell_string = ""
+                    exp_date_string = ""
+                    strike_string = ""
+                    put_or_call_string = ""
+                    exp_type_suffix = ""
+                    exp_type_prefix = ""
+                    counter = 0
+                    min_quantity = sys.maxsize
+
+                    for k in j['legs']:
+
+                        option_type = k['option_type']
+                        dte = k['dte']
+                        delta = k['delta']
+
+                        option_data_list.append(filter_data(option_type, dte, delta, k['quantity'], json_data))
+
+                        if abs(k['quantity']) < min_quantity:
+                            min_quantity = abs(k['quantity'])
+                        counter += 1
+
+                    if not is_prime(min_quantity):
+                        number_of_trades = min_quantity
+                    else:
+                        number_of_trades = 1
+
+                    for k in j['legs']:
+                        tranche_string += str(int(k['quantity'] / number_of_trades))
+                        if k['leg_id'] < j['number_of_legs'] - 1:
+                            tranche_string += '/'
+
+                    sum_credit_debit = 0.0
+                    counter = 0
+                    for x in option_data_list:
+                        # There's a bug in filter_data where sometimes multiple strikes are chosen in leg.
+                        # This is a Band-aid to remove all but the first in the list.
+                        while len(x) > 1:
+                            x.pop(1)
+                        for y in x:
+                            sum_credit_debit += (y['quantity'] * y['mark'])
+
+                            if "AM" in y['description'] and "SPX " in y['description']:
+                                exp_type_prefix = ""
+                                exp_type_suffix = " [AM]"
+                            elif "PM" in y['description'] and 'Quarterly' in y['description']:
+                                exp_type_prefix = "(Quarterlys)"
+                                exp_type_suffix = ""
+                            elif "PM" in y['description'] and 'Quarterly' not in y['description'] and "SPXW " in y[
+                                'description']:
+                                exp_type_prefix = "(Weeklys)"
+                                exp_type_suffix = ""
+                            else:
+                                exp_type_prefix = "unhandled"
+                                exp_type_suffix = "unhandled"
+
+                            exp_date_string += y['expiry_date'].strftime('%d ') + \
+                                               y['expiry_date'].strftime('%b ').upper() + \
+                                               y['expiry_date'].strftime('%y') + exp_type_suffix
+                            strike_string += str(int(y['strike_price']))
+                            put_or_call_string += str(y['options_type'])
+                            if counter < j['number_of_legs'] - 1:
+                                exp_date_string += '/'
+                                strike_string += '/'
+                                put_or_call_string += '/'
+                        counter += 1
+                    if sum_credit_debit < 0.0:
+                        buy_or_sell_string = "SELL"
+                    else:
+                        buy_or_sell_string = "BUY"
+
+                    print(buy_or_sell_string + " +" + str(number_of_trades) + " " + tranche_string +
+                          " CUSTOM SPX 100 " + exp_type_prefix + " " + exp_date_string + " " + strike_string + " " + put_or_call_string +
+                          " @ LMT")
+                    f.write(buy_or_sell_string + " +" + str(number_of_trades) + " " + tranche_string +
+                            " CUSTOM SPX 100 " + exp_type_prefix + " " + exp_date_string + " " + strike_string + " " + put_or_call_string +
+                            " @ LMT\n")
+
+        f.close()
+
+        if not trade_found:
+            print("Trade not found in trade_structures file. Please try again.\n")
+            additional_run = True
+        else:
+            input_valid = False
+            while not input_valid:
+                user_continues = input('\nAdd another trade [y/n]? ')
+                if user_continues == 'n' or user_continues == 'N':
+                    user_done = True
+                    input_valid = True
+                elif user_continues == 'y' or user_continues == 'Y':
+                    additional_run = True
+                    input_valid = True
+                else:
+                    print("Unhandled input entered. Please try again.")
